@@ -35,7 +35,7 @@ public:
 
     void OnCreate(Guild* /*guild*/, Player* leader, const std::string& /*name*/)
     {
-        ChatHandler(leader->GetSession()).PSendSysMessage("You now own a guild. You can purchase a Guild House!");
+        ChatHandler(leader->GetSession()).PSendSysMessage("Du besitzt jetzt eine Gilde und kannst die Gildenzone kaufen!");
     }
 
     uint32 GetGuildPhase(Guild* guild)
@@ -48,11 +48,11 @@ public:
 
         if (RemoveGuildHouse(guild))
         {
-            LOG_INFO("modules", "GUILDHOUSE: Deleting Guild House data due to disbanding of guild...");
+            LOG_INFO("modules", "GUILDHOUSE: Gildenzonendaten wird gelöschent aufgrund der Auflösung einer Gilde...");
         }
         else
         {
-            LOG_INFO("modules", "GUILDHOUSE: Error deleting Guild House data during disbanding of guild!!");
+            LOG_INFO("modules", "GUILDHOUSE: Fehler beim Löschen der Gildenzonendaten bei der Auflösung einer Gilde!!");
         }
     }
 
@@ -141,7 +141,7 @@ public:
     {
         if (!player->GetGuild())
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("You are not a member of a guild.");
+            ChatHandler(player->GetSession()).PSendSysMessage("Du bist kein Mitglied einer Gilde.");
             CloseGossipMenuFor(player);
             return false;
         }
@@ -151,14 +151,14 @@ public:
         // Only show Teleport option if guild owns a guild house
         if (has_gh)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Teleport to Guild House", GOSSIP_SENDER_MAIN, 1);
+            AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Zu Gildenzone Teleportieren", GOSSIP_SENDER_MAIN, 1);
 
             // Only show "Sell" option if they have a guild house & have permission to sell it
             Guild* guild = sGuildMgr->GetGuildById(player->GetGuildId());
             Guild::Member const* memberMe = guild->GetMember(player->GetGUID());
             if (memberMe->IsRankNotLower(sConfigMgr->GetOption<int32>("GuildHouseSellRank", 0)))
             {
-                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Sell Guild House!", GOSSIP_SENDER_MAIN, 3, "Are you sure you want to sell your Guild House?", 0, false);
+                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Gildenzone verkaufen!", GOSSIP_SENDER_MAIN, 3, "Bist du sicher, dass du die Gildenzone verkaufen willst?", 0, false);
             }
         }
         else
@@ -166,11 +166,11 @@ public:
             // Only leader of the guild can buy guild house & only if they don't already have a guild house
             if (player->GetGuild()->GetLeaderGUID() == player->GetGUID())
             {
-                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Buy Guild House!", GOSSIP_SENDER_MAIN, 2);
+                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Gildenzone kaufen!", GOSSIP_SENDER_MAIN, 2);
             }
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close", GOSSIP_SENDER_MAIN, 5);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Schliessen", GOSSIP_SENDER_MAIN, 5);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
     }
@@ -203,7 +203,7 @@ public:
             QueryResult has_gh = CharacterDatabase.Query("SELECT id, `guild` FROM `guild_house` WHERE guild={}", player->GetGuildId());
             if (!has_gh)
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("Your guild does not own a Guild House!");
+                ChatHandler(player->GetSession()).PSendSysMessage("Deine Gilde hat keine Gildenzone!");
                 CloseGossipMenuFor(player);
                 return false;
             }
@@ -211,15 +211,15 @@ public:
             // calculate total gold returned: 1) cost of guild house and cost of each purchase made
             if (RemoveGuildHouse(player))
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("You have successfully sold your Guild House.");
-                player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "We just sold our Guild House.", LANG_UNIVERSAL);
+                ChatHandler(player->GetSession()).PSendSysMessage("Du hast deine Gildenzone ergolreich verkauft.");
+                player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "Wir haben gerade unser Gildenzone verkauft.", LANG_UNIVERSAL);
                 player->ModifyMoney(+(sConfigMgr->GetOption<int32>("CostGuildHouse", 10000000) / 2));
-                LOG_INFO("modules", "GUILDHOUSE: Successfully returned money and sold Guild House");
+                LOG_INFO("modules", "GUILDHOUSE: Erfolgreich Geld zurückgegeben und Gildenzone verkauft");
                 CloseGossipMenuFor(player);
             }
             else
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("There was an error selling your Guild House.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Es gab einen Fehler beim Verkauf Ihrer Gildenzone.");
                 CloseGossipMenuFor(player);
             }
             break;
@@ -237,10 +237,10 @@ public:
             CharacterDatabase.Query("INSERT INTO `guild_house` (guild, phase, map, positionX, positionY, positionZ, orientation) VALUES ({}, {}, {}, {}, {}, {}, {})", player->GetGuildId(), GetGuildPhase(player), map, posX, posY, posZ, ori);
             player->ModifyMoney(-(sConfigMgr->GetOption<int32>("CostGuildHouse", 10000000)));
             // Msg to purchaser and Msg Guild as purchaser
-            ChatHandler(player->GetSession()).PSendSysMessage("You have successfully purchased a Guild House");
-            player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "We now have a Guild House!", LANG_UNIVERSAL);
-            player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "In chat, type `.guildhouse teleport` or `.gh tele` to meet me there!", LANG_UNIVERSAL);
-            LOG_INFO("modules", "GUILDHOUSE: GuildId: '{}' has purchased a guildhouse", player->GetGuildId());
+            ChatHandler(player->GetSession()).PSendSysMessage("Du hast die Gildenzone erfolgreich erworben.");
+            player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "Wir haben nun eine Gildenzone!", LANG_UNIVERSAL);
+            player->GetGuild()->BroadcastToGuild(player->GetSession(), false, "Tippe `.gh tele` ein um zur Gildenzone zu kommen!", LANG_UNIVERSAL);
+            LOG_INFO("modules", "GUILDHOUSE: GuildId: '{}' hat eine Gildenzone gekauft.", player->GetGuildId());
 
             // Spawn a portal and the guild house butler automatically as part of purchase.
             SpawnStarterPortal(player);
@@ -450,13 +450,13 @@ public:
 
         if (result)
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("Your guild already has a Guild House.");
+            ChatHandler(player->GetSession()).PSendSysMessage("Deine Gilden hat schon eine Gildenzone.");
             CloseGossipMenuFor(player);
             return false;
         }
 
         ClearGossipMenuFor(player);
-        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "GM Island", GOSSIP_SENDER_MAIN, 100, "Buy Guild House on GM Island?", sConfigMgr->GetOption<int32>("CostGuildHouse", 10000000), false);
+        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Gildenzone", GOSSIP_SENDER_MAIN, 100, "Gildenzone kaufen?", sConfigMgr->GetOption<int32>("CostGuildHouse", 10000000), false);
         // Removing this tease for now, as right now the phasing code is specific go GM Island, so it's not a simple thing to add new areas yet.
         // AddGossipItemFor(player, GOSSIP_ICON_CHAT, " ----- More to Come ----", GOSSIP_SENDER_MAIN, 4);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
@@ -474,14 +474,14 @@ public:
             if (player->GetGuild()->GetLeaderGUID() == player->GetGUID())
             {
                 // Only leader of the guild can buy / sell guild house
-                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Buy Guild House!", GOSSIP_SENDER_MAIN, 2);
-                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Sell Guild House!", GOSSIP_SENDER_MAIN, 3, "Are you sure you want to sell your Guild House?", 0, false);
+                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Gildenzone kaufen!", GOSSIP_SENDER_MAIN, 2);
+                AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Gildenzone verkaufen!", GOSSIP_SENDER_MAIN, 3, "Bist du sicher, dass du deine Gildenzone verkaufen willst??", 0, false);
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Teleport to Guild House", GOSSIP_SENDER_MAIN, 1);
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close", GOSSIP_SENDER_MAIN, 5);
+            AddGossipItemFor(player, GOSSIP_ICON_TABARD, "Zur Gildenzone teleportieren", GOSSIP_SENDER_MAIN, 1);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Schliessen", GOSSIP_SENDER_MAIN, 5);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
-            ChatHandler(player->GetSession()).PSendSysMessage("Your Guild does not own a Guild House");
+            ChatHandler(player->GetSession()).PSendSysMessage("Deine Gilde hat keine Gildenzone");
             return;
         }
 
@@ -584,7 +584,7 @@ public:
 
             if (!result || !player->GetGuild())
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("Your guild does not own a Guild House.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Deine Gilde hat keine Gildenzone.");
                 teleportToDefault(player);
                 return;
             }
@@ -640,21 +640,21 @@ public:
 
         if (!player->GetGuild() || (player->GetGuild()->GetLeaderGUID() != player->GetGUID()))
         {
-            handler->SendSysMessage("You must be the Guild Master of a guild to use this command!");
+            handler->SendSysMessage("Sie müssen der Gildenmeister einer Gilde sein, um diesen Befehl zu verwenden!");
             handler->SetSentErrorMessage(true);
             return false;
         }
 
         if (player->GetAreaId() != 876)
         {
-            handler->SendSysMessage("You must be in your Guild House to use this command!");
+            handler->SendSysMessage("Sie müssen sich in Ihrem Gildenzone befinden, um diesen Befehl zu verwenden!");
             handler->SetSentErrorMessage(true);
             return false;
         }
 
         if (player->FindNearestCreature(500031, VISIBLE_RANGE, true))
         {
-            handler->SendSysMessage("You already have the Guild House Butler!");
+            handler->SendSysMessage("Sie haben bereits den Gildenzonen-Butler!");
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -667,7 +667,7 @@ public:
         Creature* creature = new Creature();
         if (!creature->Create(map->GenerateLowGuid<HighGuid::Unit>(), map, GetGuildPhase(player), 500031, 0, posX, posY, posZ, ori))
         {
-            handler->SendSysMessage("You already have the Guild House Butler!");
+            handler->SendSysMessage("Sie haben bereits den Gildenzonen-Butler!");
             handler->SetSentErrorMessage(true);
             delete creature;
             return false;
@@ -699,7 +699,7 @@ public:
 
         if (player->IsInCombat())
         {
-            handler->SendSysMessage("You can't use this command while in combat!");
+            handler->SendSysMessage("Du kannst diesen Befehl nicht im Kampf verwenden.!");
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -709,7 +709,7 @@ public:
 
         if (!result)
         {
-            handler->SendSysMessage("Your guild does not own a Guild House!");
+            handler->SendSysMessage("Deine Gilde hat keine Gildenzone!");
             handler->SetSentErrorMessage(true);
             return false;
         }

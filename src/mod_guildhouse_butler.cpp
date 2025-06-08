@@ -46,29 +46,29 @@ public:
 
             if (!memberMe->IsRankNotLower(GuildHouseBuyRank))
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("You are not authorized to make Guild House purchases.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Du bist nicht berechtigt, Einkäufe im Gildenhaus zu tätigen.");
                 return false;
             }
         }
         else
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("You are not in a guild!");
+            ChatHandler(player->GetSession()).PSendSysMessage("Du bist in keiner Gilde!");
             return false;
         }
 
         ClearGossipMenuFor(player);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Innkeeper", GOSSIP_SENDER_MAIN, 500032, "Add an Innkeeper?", GuildHouseInnKeeper, false);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Mailbox", GOSSIP_SENDER_MAIN, 184137, "Spawn a Mailbox?", GuildHouseMailBox, false);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Stable Master", GOSSIP_SENDER_MAIN, 28690, "Spawn a Stable Master?", GuildHouseVendor, false);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Class Trainer", GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Vendor", GOSSIP_SENDER_MAIN, 3);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn City Portals / Objects", GOSSIP_SENDER_MAIN, 4);
-        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Spawn Bank", GOSSIP_SENDER_MAIN, 30605, "Spawn a Banker?", GuildHouseBank, false);
-        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Spawn Auctioneer", GOSSIP_SENDER_MAIN, 6, "Spawn an Auctioneer?", GuildHouseAuctioneer, false);
-        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Spawn Neutral Auctioneer", GOSSIP_SENDER_MAIN, 9858, "Spawn a Neutral Auctioneer?", GuildHouseAuctioneer, false);
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, "Spawn Primary Profession Trainers", GOSSIP_SENDER_MAIN, 7);
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, "Spawn Secondary Profession Trainers", GOSSIP_SENDER_MAIN, 8);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Spawn Sprirt Healer", GOSSIP_SENDER_MAIN, 6491, "Spawn a Spirit Healer?", GuildHouseSpirit, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Gastwirt", GOSSIP_SENDER_MAIN, 500032, "Gastwirt erscheinen lassen?", GuildHouseInnKeeper, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Briefkasten", GOSSIP_SENDER_MAIN, 184137, "Briefkastem erscheinen lassen?", GuildHouseMailBox, false);
+        /*AddGossipItemFor(player, GOSSIP_ICON_TALK, "Stallmeister", GOSSIP_SENDER_MAIN, 28690, "Stallmeister erscheinen lassen?", GuildHouseVendor, false);*/
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Klassentrainer", GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Verkäufer", GOSSIP_SENDER_MAIN, 3);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Portale / Objekte", GOSSIP_SENDER_MAIN, 4);
+        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Bank", GOSSIP_SENDER_MAIN, 3318, "Banker erscheinen lassen?", GuildHouseBank, false);
+        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Auktionator", GOSSIP_SENDER_MAIN, 6, "Auktionatoren erscheinen lassen", GuildHouseAuctioneer, false);
+        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Neutraler Auktionator", GOSSIP_SENDER_MAIN, 9858, "Neutraler Auktionator erscheinen lassen?", GuildHouseAuctioneer, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, "Hauptberufe", GOSSIP_SENDER_MAIN, 7);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, "Nebenberufe", GOSSIP_SENDER_MAIN, 8);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, "Geistheiler", GOSSIP_SENDER_MAIN, 6491, "Geitsheiler erscheinen lassen?", GuildHouseSpirit, false);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
     }
@@ -186,7 +186,7 @@ public:
             break;
         case 10: // PVP toggle
             break;
-        case 30605: // Banker
+        case 3318: // Banker
             cost = GuildHouseBank;
             SpawnNPC(action, player);
             break;
@@ -232,7 +232,7 @@ public:
         case 4255:  // Food & Drink Vendor
         case 29636: // Reagent Vendor
         case 29493: // Ammo & Repair Vendor
-        case 28690: // Stable Master
+        //case 28690: // Stable Master
         case 2622:  // Poisons Vendor
             cost = GuildHouseVendor;
             SpawnNPC(action, player);
